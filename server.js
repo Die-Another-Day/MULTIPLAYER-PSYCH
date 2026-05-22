@@ -496,6 +496,6 @@ wss.on('connection', ws => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`⚡ MULTIPLAYER PSYCH — http://localhost:${PORT}`);
 });
