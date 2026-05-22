@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>MULTIPLAYER PSYCH — ARCADE LAB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Neural Network Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div class="grain"></div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: CONNECT
+  ══════════════════════════════════════════ -->
+  <div id="s-connect" class="screen active">
+    <div class="panel">
+      <div class="eyebrow">ARCADE LAB // EXPERIMENT_04</div>
+      <div class="logo">
+        <div class="logo-sub">MULTIPLAYER</div>
+        <div class="logo-main">PSYCH</div>
+        <div class="logo-tag">SOCIAL DYNAMICS AS GAME LOOPS</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">OPERATIVE NAME</label>
+        <input id="inp-name" class="inp" type="text" placeholder="ENTER DESIGNATION" maxlength="16" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="field-group">
+        <label class="field-label">ROOM CODE <span class="opt-tag">— LEAVE EMPTY TO CREATE NEW</span></label>
+        <input id="inp-code" class="inp mono" type="text" placeholder="XXXXX" maxlength="5" autocomplete="off" spellcheck="false">
+      </div>
+      <button class="btn primary" id="btn-join">INITIATE NEURAL LINK</button>
+      <div id="conn-err" class="err-msg hidden"></div>
+      <div class="flavor-row">
+        <span class="flavor-dot" style="background:#00F5FF"></span>Sync Pulse
+        <span class="flavor-dot" style="background:#FF2DA6"></span>Trust Protocol
+        <span class="flavor-dot" style="background:#7A5CFF"></span>Hive Mind
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: LOBBY
+  ══════════════════════════════════════════ -->
+  <div id="s-lobby" class="screen hidden">
+    <div class="panel wide">
+      <div class="lobby-top">
+        <div class="eyebrow">NEURAL LINK ESTABLISHED</div>
+        <div class="room-code-row">
+          <div class="rc-label">ROOM CODE</div>
+          <div id="room-code" class="rc-val">XXXXX</div>
+          <button class="copy-btn" id="btn-copy" title="Copy room code">COPY</button>
+        </div>
+      </div>
+      <div id="player-grid" class="player-grid"></div>
+      <div class="lobby-footer">
+        <span id="lobby-count" class="lc">1 / 8 OPERATIVES LINKED</span>
+        <span id="lobby-status" class="ls">AWAITING HOST</span>
+      </div>
+      <button class="btn primary hidden" id="btn-start">BEGIN EXPERIMENT</button>
+      <div class="seq-preview">
+        <div class="seq-label">EXPERIMENT SEQUENCE</div>
+        <div class="seq-list">
+          <div class="seq-item"><span class="seq-n">01</span><span class="seq-name">SYNC PULSE</span></div>
+          <div class="seq-item"><span class="seq-n">02</span><span class="seq-name">TRUST PROTOCOL</span></div>
+          <div class="seq-item"><span class="seq-n">03</span><span class="seq-name">HIVE MIND</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: MODE INTRO
+  ══════════════════════════════════════════ -->
+  <div id="s-intro" class="screen hidden center-screen">
+    <div class="intro-wrap">
+      <div id="intro-idx" class="intro-idx">01 / 03</div>
+      <div id="intro-name" class="intro-name">SYNC PULSE</div>
+      <div id="intro-desc" class="intro-desc">Description</div>
+      <div class="intro-bar-wrap"><div id="intro-bar" class="intro-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: SYNC PULSE
+  ══════════════════════════════════════════ -->
+  <div id="s-sync" class="screen hidden">
+    <div class="game-header">
+      <div class="gh-block">
+        <div class="gh-label">SYNC PULSE</div>
+        <div id="sync-round-disp" class="gh-val">01 / 05</div>
+      </div>
+      <div class="gh-center">
+        <div id="sync-msg" class="sync-msg">CLICK WHEN THE PULSE HITS THE RING</div>
+      </div>
+      <div class="gh-block right">
+        <div class="gh-label">LEADERBOARD</div>
+        <div id="sync-scores" class="score-col"></div>
+      </div>
+    </div>
+    <div class="sync-arena">
+      <canvas id="sync-canvas"></canvas>
+      <div id="sync-result-pop" class="result-pop hidden"></div>
+    </div>
+    <div id="click-rings" class="click-rings"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: TRUST PROTOCOL
+  ══════════════════════════════════════════ -->
+  <div id="s-trust" class="screen hidden">
+    <div class="game-header">
+      <div class="gh-block">
+        <div class="gh-label">TRUST PROTOCOL</div>
+        <div id="trust-round-disp" class="gh-val">01 / 03</div>
+      </div>
+      <div class="gh-center">
+        <div id="trust-timer-ring" class="timer-ring">
+          <svg viewBox="0 0 80 80"><circle class="tr-bg" cx="40" cy="40" r="34"/><circle id="tr-arc" class="tr-arc" cx="40" cy="40" r="34"/></svg>
+          <div id="trust-secs" class="tr-secs">22</div>
+        </div>
+        <div id="trust-status" class="trust-status">MAKE YOUR CHOICE</div>
+      </div>
+      <div class="gh-block right">
+        <div class="gh-label">CHOSEN</div>
+        <div id="trust-chosen" class="gh-val">0 / 0</div>
+      </div>
+    </div>
+    <div class="trust-body">
+      <div id="trust-history-wrap" class="trust-history-wrap"></div>
+      <div id="trust-choice-panel" class="trust-choice-panel">
+        <button class="choice-card cooperate" id="btn-coop">
+          <div class="cc-icon">🤝</div>
+          <div class="cc-name">COOPERATE</div>
+          <div class="cc-desc">Trust the collective.<br>Mutual gain if all agree.</div>
+          <div class="cc-pts">+65 if all cooperate</div>
+        </button>
+        <div class="vs-divider">VS</div>
+        <button class="choice-card defect" id="btn-def">
+          <div class="cc-icon">⚔️</div>
+          <div class="cc-name">DEFECT</div>
+          <div class="cc-desc">Betray for personal gain.<br>Win big if others trust.</div>
+          <div class="cc-pts">+85 if others cooperate</div>
+        </button>
+      </div>
+      <div id="trust-reveal" class="trust-reveal hidden"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: HIVE MIND
+  ══════════════════════════════════════════ -->
+  <div id="s-hive" class="screen hidden">
+    <div class="game-header">
+      <div class="gh-block">
+        <div class="gh-label">HIVE MIND</div>
+        <div id="hive-target-disp" class="gh-val">0 / 7</div>
+      </div>
+      <div class="gh-center">
+        <div id="hive-clock" class="hive-clock">60</div>
+        <div class="gh-label">SECONDS</div>
+      </div>
+      <div class="gh-block right">
+        <div class="gh-label">SYNC LEVEL</div>
+        <div class="sync-track"><div id="hive-sync-fill" class="sync-fill"></div></div>
+        <div id="hive-input-count" class="gh-label">0 PUSHING</div>
+      </div>
+    </div>
+    <canvas id="hive-canvas" class="hive-canvas"></canvas>
+    <div class="hive-controls">
+      <div class="dpad">
+        <button class="dpad-btn" id="hb-up"    data-dx="0"  data-dy="-1">▲</button>
+        <button class="dpad-btn" id="hb-left"  data-dx="-1" data-dy="0">◀</button>
+        <div class="dpad-center"></div>
+        <button class="dpad-btn" id="hb-right" data-dx="1"  data-dy="0">▶</button>
+        <button class="dpad-btn" id="hb-down"  data-dx="0"  data-dy="1">▼</button>
+      </div>
+      <div class="hive-key-hint">W A S D  ·  ↑ ↓ ← →</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: MODE END
+  ══════════════════════════════════════════ -->
+  <div id="s-mode-end" class="screen hidden center-screen">
+    <div class="panel">
+      <div id="me-eyebrow" class="eyebrow">MODE COMPLETE</div>
+      <div id="me-title" class="big-title">SYNC PULSE</div>
+      <div id="me-scores" class="me-score-list"></div>
+      <div class="me-next-msg">NEXT EXPERIMENT IN 3...</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: FINAL RESULTS
+  ══════════════════════════════════════════ -->
+  <div id="s-results" class="screen hidden">
+    <div class="results-page">
+      <div class="results-header">
+        <div class="eyebrow">EXPERIMENT COMPLETE</div>
+        <div class="results-title">PSYCHOLOGICAL<br>PROFILES</div>
+      </div>
+      <div id="results-grid" class="results-grid"></div>
+      <button class="btn primary" id="btn-again">RUN AGAIN</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       GLOBAL OVERLAYS
+  ══════════════════════════════════════════ -->
+  <div id="notif" class="notif hidden"></div>
+  <div id="host-left-banner" class="host-banner hidden">HOST DISCONNECTED — RETURNING TO LOBBY</div>
+
+  <script src="game.js"></script>
+</body>
+</html>
