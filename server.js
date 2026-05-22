@@ -495,4 +495,8 @@ wss.on('connection', ws => {
   ws.on('error', () => { if (room) room.removePlayer(pid); });
 });
 
-server.listen(PORT, () => console.log(`\n⚡ MULTIPLAYER PSYCH — http://localhost:${PORT}\n`));
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`⚡ MULTIPLAYER PSYCH — http://localhost:${PORT}`);
+});
